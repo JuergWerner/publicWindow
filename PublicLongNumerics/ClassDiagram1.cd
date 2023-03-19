@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LongNumerics.EIntCon">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABQAAAEQAAgAAAAAAAAgAAQIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>EIntCon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LongNumerics.EIntMath">
+    <Position X="2.75" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="LongNumerics.EIntMath.ThreadParams">
+        <TypeIdentifier>
+          <NewMemberFileName>EIntMath.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AQAAEFAAAAEAAAACCQAEBAAAACAAAAgAAQAAAAAAACA=</HashCode>
+      <FileName>EIntMath.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LongNumerics.PlainText">
+    <Position X="4.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAYEAAAAAAABAAAAAAEgAAAABAA=</HashCode>
+      <FileName>PlainText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="LongNumerics.EInt" BaseTypeListCollapsed="true">
+    <Position X="1" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="LongNumerics.EInt.EInt_ArgIsNullException">
+        <TypeIdentifier>
+          <NewMemberFileName>EInt.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="LongNumerics.EInt.EInt_DivByZeroException">
+        <TypeIdentifier>
+          <NewMemberFileName>EInt.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CBciEAyAgAIBgAAm6Y3LIgQAIgYAAIYBAgEECAAARzQ=</HashCode>
+      <FileName>EInt.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
