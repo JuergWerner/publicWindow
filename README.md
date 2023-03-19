@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Author: Dr. Jürg Werner, Switzerland.
 
 Copy Rights: All rights reserved by the author and owner of the code, Dr. Jürg Werner, Switzerland (see X11 License Notification below).
@@ -157,3 +158,6 @@ Various methods support cryptographic applications and modulo calculus.
 Outlook:
 
 RSA-Key-Algorithms with multi-thread implementation for very long keys are as  alpha-versions under test, with signature functions to distribute keys. This may be interesting for users who do not trust the usual implementation. 
+=======
+# publicWindow
+>>>>>>> 213c04fb6632f9bd4cc47ef4ffdf4588a8de2b6e
