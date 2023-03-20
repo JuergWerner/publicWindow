@@ -1,0 +1,12 @@
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\bin\Release\net6.0\PublicLongNumerics.deps.json
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\bin\Release\net6.0\PublicLongNumerics.dll
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\bin\Release\net6.0\PublicLongNumerics.pdb
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.csproj.AssemblyReference.cache
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.GeneratedMSBuildEditorConfig.editorconfig
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.AssemblyInfoInputs.cache
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.AssemblyInfo.cs
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.csproj.CoreCompileInputs.cache
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.dll
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\refint\PublicLongNumerics.dll
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\PublicLongNumerics.pdb
+D:\juerg_E\C_VS\publicWindow\PublicLongNumerics\obj\Release\net6.0\ref\PublicLongNumerics.dll
