@@ -22,6 +22,8 @@ Language: C# (10), .Net (6)
 
 Assembly Name, Namespace: LongNumerics 
 
+Version 1.1
+
 #### Purpose of *LongNumerics*:
 
 Handling of unsigned integers for any application using unsigned integers of exceeding or unpredictable length, especially cryptography, modulo arithmetic, etc.. 
@@ -108,7 +110,7 @@ Various methods support cryptographic applications and modulo calculus.
   
   object-level:
   
-  - Arithmetic methods: `Add(), Sub(), Mul(), Div(), Sq()` (square), `Trim()`(cut of leading zero words)
+  - Arithmetic methods: `Add(), Sub(), Mul(), Div(), Sq()` (square), `Trim()`(cut of leading zero words), ``PackLow()`, `Extract()`.
   - Modulo arithmetic (overloaded) operations: `Add(), Sub(), Mul(), Div(), Exp()`
   - Boolean operations: `IsZero(), IsEqual(), IsGreaterThan, IsLessThan()`
   - conversion methods: `ToString(), ToText(), ToXml()`
@@ -154,6 +156,3 @@ Various methods support cryptographic applications and modulo calculus.
   - `TextID`: identifier of the text
   - `ToString()`:  string output of the object content
 
-Outlook:
-
-RSA-Key-Algorithms with multi-thread implementation for very long keys are as  alpha-versions under test, with signature functions to distribute keys. This may be interesting for users who do not trust the usual implementation. 

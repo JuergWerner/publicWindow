@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Data;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 
@@ -195,35 +196,34 @@ namespace LongNumerics
         /// 
         public static EInt TextStringToEInt(string textString, out int byteLengt, bool reverse = false)
         {
+            EInt _result;
 
             if (textString == null)                                     // Exception textString == null
+                throw new ArgumentNullException($"TextStringToEInt: Text-string is null, cannot be converted to EInt");
+
+            else if (textString == "")                                  // Special case: textString = ""
             {
-                byteLengt = 0;
-                Console.WriteLine($"Text-string is null:\nreturn 0");
-                return new EInt("0", "null");
-            }
-            else if (textString == "")                                  // Exception textString = ""
-            {
-                byteLengt = 0;
-                Console.WriteLine($"Text-string is empty:\nreturn 0");
-                return new EInt("0");
+                byteLengt = 0;  
+                _result = new EInt("0");
+                _result.MessageByteLength = byteLengt;
+                _result.ObjectID = "Text string was empty";
             }
             else
             {
                 byte[] _textBytes = Encoding.Default.GetBytes(textString);   // Encode, default setting of encoding
                 byteLengt = _textBytes.Length;                           // fill in byte array of length 'byteLength'
-                if (reverse) Array.Reverse(_textBytes);    // reverse _order if parameter is set true
+                if (reverse) Array.Reverse(_textBytes);                  // reverse _order if parameter is set true
 
-                EInt _result = new(1);                                   // fill byte array in EInt, Order reversed
+                _result = new(1);                                        // fill byte array in EInt, Order reversed
                 for (int i = 0; i < byteLengt; i++)
                 {
                     _result.ShiftEintLeftRight(8, true);
                     _result.Xuint[0] += _textBytes[i];
                 }
-                _result.ObjectID = (byteLengt > 0) ? "Text encoded" : "text-string null or empty";
-                _result.MessageByteLength = byteLengt;
-                return _result;
+                _result.ObjectID = (byteLengt > 0) ? "Text encoded" : "code length after decoding string is of zero length!";
+                _result.MessageByteLength = byteLengt;                
             }
+            return _result;
         }
 
 
@@ -393,6 +393,8 @@ namespace LongNumerics
                 s = "null";
             return s;
         }
+
+       
 
 
 

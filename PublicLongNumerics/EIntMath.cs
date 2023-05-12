@@ -17,6 +17,11 @@ namespace LongNumerics
         public const int MinimumBitLength = 3;
 
         /// <summary>
+        /// Length of SHA256 lenth in bytes
+        /// </summary>
+        public const int hLen_SHA256 = 32;
+
+        /// <summary>
         /// _k256 UInt32[64]: constants for 64 round in SHA 256
         /// </summary>     
         private static readonly UInt32[] _k256 =
@@ -35,7 +40,9 @@ namespace LongNumerics
         /// <summary>
         /// _bitMaskMsb 32-bit Xuint with highest _order bit set only
         /// </summary>
-        private const UInt32 _bitMaskMsb = 0x80000000;
+        private const UInt32 _bitMaskMsb   = 0x80000000;
+
+        private const UInt64 _bitMaskMsb64 = 0x8000000000000000;
 
 
         // Static Functions, Array Math:
@@ -88,14 +95,47 @@ namespace LongNumerics
             UInt32 _bitMask;
 
             _jr = bitPosition % 32;                                              // Bit-Position within the Xuint
-            _jf = (bitPosition - _jr) / 32;                                       // Array Element index (zero-based)
+            _jf = (bitPosition - _jr) / 32;                                      // Array Element index (zero-based)
 
             if ((inArray.GetUpperBound(0) >= _jf) && (bitPosition >= 0))
             {
                 _bitMask = 1;
                 _bitMask <<= _jr;
 
-                inArray[_jf] = inArray[_jf] | _bitMask;                            // set bit
+                inArray[_jf] = inArray[_jf] | _bitMask;                           // set bit
+
+                return true;
+            }
+            else
+                return false;
+        }
+
+
+
+
+        /// <summary>
+        /// This Methods sets in the array 'inArray' the bit at position 'bitPosition' to 1,
+        /// if successful, a bool value of True is returned. if bitPosition is outside the array, 
+        /// a false value is returned.
+        /// </summary>
+        /// <param name="inArray">array where the bit should be set</param>
+        /// <param name="bitPosition">position (zero-based)</param>
+        /// <returns><see langword="true"/>: successful, false: bitPosition outside array</returns>
+        /// 
+        public static bool SetArrayBit64BitVector(UInt64[] inArray, int bitPosition)
+        {
+            int _jr, _jf;
+            UInt64 _bitMask;
+
+            _jr = bitPosition % 64;                                              // Bit-Position within the Xuint
+            _jf = (bitPosition - _jr) / 64;                                      // Array Element index (zero-based)
+
+            if ((inArray.GetUpperBound(0) >= _jf) && (bitPosition >= 0))
+            {
+                _bitMask = 1;
+                _bitMask <<= _jr;
+
+                inArray[_jf] = inArray[_jf] | _bitMask;                           // set bit
 
                 return true;
             }
@@ -118,13 +158,7 @@ namespace LongNumerics
         /// 
         public static UInt32[] ShiftLeftRightVector(UInt32[] inArray, int nShifts)
         {
-            int _inArrayWordLength = inArray.GetUpperBound(0);
-            UInt32[] _inVec = new UInt32[_inArrayWordLength + 1];               // create new instance inVec and 
-            for (int i = 0; i <= _inArrayWordLength; i += 1)                   // copy Array-Content
-            {
-                _inVec[i] = inArray[i];
-            }
-
+            UInt32[]_inVec = (UInt32[]) inArray.Clone();                       // clone inArray
             bool _carryOver;                                                   // Carry over from one UInt64-Xuint to the other
             bool _carryOverLast;
 
@@ -134,7 +168,7 @@ namespace LongNumerics
                 {
                     // Shift left: 
                     _carryOver = false;
-                    for (int k = 0; k <= _inArrayWordLength; k += 1)
+                    for (int k = 0; k < _inVec.Length; k++)
                     {
                         _carryOverLast = _carryOver;                            // carry over of the last shift operation
                         if ((_inVec[k] & _bitMaskMsb) > 0) _carryOver = true;    // carry over in this shift operation
@@ -151,7 +185,7 @@ namespace LongNumerics
                 {
                     // Shift right: 
                     _carryOver = false;
-                    for (int k = _inArrayWordLength; k >= 0; k -= 1)
+                    for (int k = _inVec.Length - 1; k >= 0; k -= 1)
                     {
                         _carryOverLast = _carryOver;                             // carry over of the last shift operation
                         if ((_inVec[k] & 1) > 0) _carryOver = true;              // carry over in this shift operation
@@ -163,6 +197,62 @@ namespace LongNumerics
             }
             return _inVec;
         }
+
+
+
+        /// <summary>
+        /// This Method performs a bitwise shift of the array by nShifts to the left (to msb). 
+        /// Negative values of nShifts shift to the right (to lsb). inArray is not affected. 
+        /// Shifts out-of-the MSb of EInt are ignored, shifts into the LSb of EInt are 0.
+        /// Exceptions: none
+        /// </summary>
+        /// <param name="inArray">Clone of this array is to be shifted</param>
+        /// <param name="nShifts">number of shifts to the left (msb) or (if negative) to the right (lsb)</param>
+        /// <returns>shifted copy of the array</returns>
+        /// 
+        public static UInt64[] ShiftLeftRight64BitVector(UInt64[] inArray, int nShifts)
+        {
+            UInt64[] _inVec = (UInt64[])inArray.Clone();                       // clone inArray
+            bool _carryOver;                                                   // Carry over from one UInt64-Xuint to the other
+            bool _carryOverLast;
+
+            if (nShifts > 0)
+            {
+                for (int i = 0; i < nShifts; i += 1)
+                {
+                    // Shift left: 
+                    _carryOver = false;
+                    for (int k = 0; k < _inVec.Length; k++)
+                    {
+                        _carryOverLast = _carryOver;                            // carry over of the last shift operation
+                        if ((_inVec[k] & _bitMaskMsb64) > 0) _carryOver = true;    // carry over in this shift operation
+                        else _carryOver = false;
+                        _inVec[k] = _inVec[k] << 1;                             // * 2
+                        if (_carryOverLast) _inVec[k] += 1;                     // add last carry over
+                    }
+                }
+            }
+
+            else if (nShifts < 0)
+            {
+                for (int i = 0; i < (-nShifts); i += 1)
+                {
+                    // Shift right: 
+                    _carryOver = false;
+                    for (int k = _inVec.Length - 1; k >= 0; k -= 1)
+                    {
+                        _carryOverLast = _carryOver;                             // carry over of the last shift operation
+                        if ((_inVec[k] & 1) > 0) _carryOver = true;              // carry over in this shift operation
+                        else _carryOver = false;
+                        _inVec[k] = _inVec[k] >> 1;                              // shift right (divide by 2)
+                        if (_carryOverLast) _inVec[k] = _inVec[k] | _bitMaskMsb;   // add last carry over
+                    }
+                }
+            }
+            return _inVec;
+        }
+
+
 
 
 
@@ -516,7 +606,7 @@ namespace LongNumerics
         /// 
         public static EInt GetPrime(bool multiThreads, int bitLength = 128, bool equalOrSmaller = false, int minBitLength = MinimumBitLength)
         {
-            int noOfThreads = multiThreads ? (Environment.ProcessorCount > 0 ? Environment.ProcessorCount - 1 : 1) : 1;
+            int noOfThreads = multiThreads ? (Environment.ProcessorCount > 0 ? Environment.ProcessorCount : 1) : 1;
 
             if (bitLength < minBitLength) bitLength = minBitLength;
 
@@ -532,28 +622,33 @@ namespace LongNumerics
             // instantiate cryptographic random generator:
             var _rand = RandomNumberGenerator.Create();
             var _byteArray = new byte[_nBytes];
-
             object threadLockRan = new();
             object threadLockRes = new();
 
-            // Make ´noOfThreads´ threads:
-            Thread[] threads = new Thread[noOfThreads];
-            for (int j = 0; j < noOfThreads; j++)
+            // if more than one thread available, do multy thread calculation
+            if (noOfThreads > 1)
             {
-                threads[j] = new Thread(new ParameterizedThreadStart(GetPrimeOneThread))
+                noOfThreads--;
+               
+
+                // Make ´noOfThreads´ threads:
+                Thread[] threads = new Thread[noOfThreads];
+                for (int j = 0; j < noOfThreads; j++)
                 {
-                    Priority = ThreadPriority.Highest
-                };
-            }
+                    threads[j] = new Thread(new ParameterizedThreadStart(GetPrimeOneThread))
+                    {
+                        Priority = ThreadPriority.Highest
+                    };
+                }
 
-            // instatiate parameter and start threads:
-            ThreadParams[] pr = new ThreadParams[noOfThreads];
-            for (int j = 0; j < noOfThreads; j++)
-            {
-                pr[j] = new ThreadParams(j, equalOrSmaller, bitLength, minBitLength);
-                threads[j].Start(pr[j]);
+                // instatiate parameter and start threads:
+                ThreadParams[] pr = new ThreadParams[noOfThreads];
+                for (int j = 0; j < noOfThreads; j++)
+                {
+                    pr[j] = new ThreadParams(j, equalOrSmaller, bitLength, minBitLength);
+                    threads[j].Start(pr[j]);
+                }
             }
-
             //do your own homework in the master thread:
             ThreadParams pp = new(-1, equalOrSmaller, bitLength, minBitLength);
             while (!_primeFound)
@@ -676,37 +771,26 @@ namespace LongNumerics
         public static EInt SHA256(EInt message, int messageLength)
 
         {
+
             // messageLenth: Length of Message in number of bits 
             // !! maximum message length is limited to 2**31 - 1 bits in this implementation !! 
+
             int _noOfMessageBlocks;
             int _noOfMessageBits;
             int _noOfMessageWords;
             UInt32[] _paddedMessage;
 
-            int _p, _k;
+            int _k;
             // ensure that the padded message is a multiple of 512 bits long 
             // the message length is stored in the least significant 64 bits 
             // followed by _k-zeros and a '1', followed by the message 
 
-            // calculate _k = number of 0'_s to be inserted for padding 
-            if ((447 - messageLength) < 0)                  // check if more than Block 0 is needed 
-            {
-                _p = 1 + (messageLength - 447) / 512;        // the lowest 447 bits of the message
-                                                             // can bes stored in Block 0 
+            _noOfMessageBlocks = ((messageLength + 65) % 512 == 0) ? ((messageLength + 65) / 512) : (1 + (messageLength + 65) / 512);
+            _k = _noOfMessageBlocks * 512 - 65 - messageLength;
 
-                _k = 447 + _p * 512 - messageLength;          // the number of message bits that could be stored
-                                                              // in Block 0, .. _p is = 447 + _p * 512
-                                                              // only messageLength bits are needed, pad the rest
-                                                              // with k-zeros 
-            }
-            else
-            {                                               // message small 
-                _k = 447 - messageLength;
-            }
 
             // calculate length of padded message 
             _noOfMessageBits = messageLength + 1 + _k + 64;
-            _noOfMessageBlocks = _noOfMessageBits / 512;
             _noOfMessageWords = _noOfMessageBits / 32;
 
 
@@ -761,6 +845,7 @@ namespace LongNumerics
                     }
                     else
                     {
+
                         _W[t] = Sigma1_256(_W[t - 2]) + _W[t - 7] + Sigma0_256(_W[t - 15]) + _W[t - 16];
                     }
                 }
@@ -810,9 +895,6 @@ namespace LongNumerics
 
 
             return _hashEndresult_256;
-
-
-
 
 
 

@@ -150,6 +150,7 @@ namespace LongNumerics
             get => EIntMath.SHA256(this, 8*ByteSize);
         }
 
+
         /* ---------------------------------------------------------------------------------------------- 
          * End of Properties
          * ---------------------------------------------------------------------------------------------- */
@@ -774,7 +775,12 @@ namespace LongNumerics
         /// 
         public static explicit operator EInt(byte[] bytes)
         {
-            return EIntCon.ByteArrayToEInt(bytes);
+            EInt _result;
+            _result = EIntCon.ByteArrayToEInt(bytes);
+            _result.MessageByteLength = bytes.Length;
+            _result.ObjectID = $"(EInt)byte[]";
+            
+            return _result;
         }
 
 
@@ -790,7 +796,9 @@ namespace LongNumerics
             EInt _i = new(1);
             _i.Xuint[0] = (UInt32)i;
             _i._messageByteLength = 4;
-            return _i; ;
+            _i.ObjectID = $"(EInt)int";
+
+            return _i; 
 
         }
 
@@ -805,7 +813,8 @@ namespace LongNumerics
             EInt _i = new(1);
             _i.Xuint[0] = (UInt32)i;
             _i._messageByteLength = 4;
-            return _i; ;
+            _i.ObjectID = $"(EInt)UInt32";
+            return _i;
 
         }
 
@@ -822,6 +831,7 @@ namespace LongNumerics
             _i.Xuint[0] = (UInt32)(i & 0xFFFFFFFF);
             _i.Xuint[1] = (UInt32)(i >> 32);
             _i._messageByteLength = 8;
+            _i.ObjectID = $"(EInt)ulong";
             return _i; ;
 
         }
@@ -849,7 +859,6 @@ namespace LongNumerics
         public static explicit operator EInt(PlainText text)
         {
             EInt result = EIntCon.TextStringToEInt(text.TextString, out _);
-            result.ObjectID = text.TextID;
             return result;
         }
 
@@ -874,21 +883,12 @@ namespace LongNumerics
             if (_s.Length >= 2)
             {
                 preamble = _s[0].ToString() + _s[1].ToString();
-                switch (preamble)
+                _numberSys = preamble switch
                 {
-                    case "0x":
-                    case "0X":
-                        _numberSys = 'h';
-                        break
-;
-                    case "0b":
-                    case "0B":
-                        _numberSys = 'b';
-                        break;
-                    default:
-                        _numberSys = 'd';
-                        break;
-                }
+                    "0x" or "0X" => 'h',
+                    "0b" or "0B" => 'b',
+                    _ => 'd',
+                };
             }
             else
                 _numberSys = 'd';
@@ -1295,7 +1295,7 @@ namespace LongNumerics
         /// </summary>
         /// <returns>Byte Array</returns>
         /// 
-        public byte[] ToByteArray()
+        public byte[] ToByteArray(int byteArrayLength = 0)
         {
             EInt _a = (EInt)this.Clone();
             int _order = EIntMath.GetArrayOrder(this.Xuint);
@@ -1311,6 +1311,15 @@ namespace LongNumerics
                 result[i] = (byte)(_a.Xuint[0] & 0xFF);
                 _a.ShiftEintLeftRight(-8);
             }
+
+            // Adjust byte array ´result´to the required length if desired (byteArrayLength >0) and
+            // possible (result.Length <= byteArrayLength:
+            if (byteArrayLength > 0)
+            {
+                if (result.Length > byteArrayLength) throw new Exception("Byte Array is larger than required length");
+                if (result.Length < byteArrayLength) Array.Resize(ref result, byteArrayLength);
+            }
+
             return result;
         }
 
@@ -1691,6 +1700,76 @@ namespace LongNumerics
             this.Div(modbase, true);
             _ratio.Div(modbase, true);
             return _ratio;
+
+        }
+
+
+
+        /// <summary>
+        /// Method to pack nBits (0 ... nBits-1) of Insert into ´this´
+        /// </summary>
+        /// <param name="Insert"></param>
+        /// <param name="nBits"></param>
+        public void PackLow(EInt Insert, int nBits)
+        {
+            if (nBits < 0) throw new Exception("nBits must be >= 0");
+            // make room for nBits, adjust length
+            this <<= nBits;
+
+            if (nBits > Insert.Count * 32) nBits = this.Count * 32;    // if Insert is smaller, copy only Insert, remaning is 0.
+            int _nWords = (nBits % 32 == 0) ? nBits / 32 : 1 + nBits / 32 ;
+            int _deltaBits;
+
+            if (_nWords > 0)
+            {
+                // Bits in top-most word:
+                _deltaBits = nBits - (_nWords - 1) * 32;
+
+                // fill in all but the top-most word
+                for (int i = 0; i < _nWords - 1; i++)
+                {
+                    this._xuint[i] = Insert[i];
+                }
+
+                // Fill in _deltaBits in top-most word
+                UInt32 Mask = 0xFFFFFFFF;
+                Mask >>= (32 - _deltaBits);
+
+                this._xuint[_nWords - 1] = this._xuint[_nWords - 1] | (Mask & Insert[_nWords - 1]);
+            }
+                                     
+        }
+
+
+        /// <summary>
+        /// Extract EInt from statBit, lenBits
+        /// </summary>
+        /// <param name="startBit">Start Lsb from this position (zero based)</param>
+        /// <param name="lenBits">"Extract a total of lenBits</param>
+        /// <returns></returns>
+        /// 
+        public EInt Extract(int startBit, int lenBits)
+        {
+            // check Input:
+            if ( (startBit >= 0 && startBit < this.Count*32) && (lenBits >= 0 && lenBits <= this.Count*32) )
+            {
+                if (lenBits == 0) return new EInt("0");
+                else
+                {
+                    int nWords = (lenBits % 32 == 0) ? lenBits / 32 : 1 + lenBits / 32;
+                    EInt result = new EInt(nWords);
+                    for (int i = 0; i < lenBits; i++)
+                    {
+                        if (EIntMath.CheckArrayBit(this._xuint, startBit + i))
+                        {
+                            EIntMath.SetArrayBit(result._xuint, i);
+                        }
+                    }
+                    return result;
+                }
+
+            }
+            else throw new Exception("Error Extract: Input out of bounds");
 
         }
 
