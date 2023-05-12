@@ -1,0 +1,15 @@
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.csproj.AssemblyReference.cache
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.GeneratedMSBuildEditorConfig.editorconfig
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.AssemblyInfoInputs.cache
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.AssemblyInfo.cs
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.csproj.CoreCompileInputs.cache
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\bin\Release\net6.0\PublicCryptoLib.deps.json
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\bin\Release\net6.0\PublicCryptoLib.dll
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\bin\Release\net6.0\PublicCryptoLib.pdb
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\bin\Release\net6.0\PublicLongNumerics.dll
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\bin\Release\net6.0\PublicLongNumerics.pdb
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.csproj.CopyComplete
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.dll
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\refint\PublicCryptoLib.dll
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\PublicCryptoLib.pdb
+D:\juerg_E\C_VS\publicWindow\PublicCryptoLib\obj\Release\net6.0\ref\PublicCryptoLib.dll
